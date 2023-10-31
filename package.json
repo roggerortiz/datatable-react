@@ -1,9 +1,10 @@
 {
   "name": "datatable-react",
-  "homepage": "https://roggerortiz.github.io/datatable-react/",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
+  "homepage": "https://roggerortiz.github.io/datatable-react/",
+  "author": "Rogger Ortiz <rogger.ortiz.br@gmail.com> (https://github.com/roggerortiz)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
