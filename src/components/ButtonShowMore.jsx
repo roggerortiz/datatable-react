@@ -2,10 +2,11 @@ import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
 import { useDatatable } from '../hooks/useDatatable'
 
 function ButtonShowMore() {
-  const { maxPageIndex, showMore, setPageIndex } = useDatatable()
+  const { pagination, setPager } = useDatatable()
+  const { maxPageIndex, showMore } = pagination
 
   const handleGoToPage = () => {
-    setPageIndex(maxPageIndex + 1)
+    setPager({ pageIndex: maxPageIndex + 1 })
   }
 
   if (!showMore) {

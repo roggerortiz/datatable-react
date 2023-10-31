@@ -1,4 +1,5 @@
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
+import { setDocumentTheme } from '../helpers/utils'
 import { useDatatable } from '../hooks/useDatatable'
 
 function Header() {
@@ -8,13 +9,7 @@ function Header() {
     e.preventDefault()
 
     const newTheme = theme === 'dark' ? 'light' : 'dark'
-
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-
+    setDocumentTheme(newTheme)
     setTheme(newTheme)
   }
 

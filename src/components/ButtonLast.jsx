@@ -3,14 +3,15 @@ import clsx from 'clsx'
 import { useDatatable } from '../hooks/useDatatable'
 
 function ButtonLast() {
-  const { pageIndex, pageCount, setPageIndex } = useDatatable()
+  const { pager, setPager } = useDatatable()
+  const { pageIndex, pageCount } = pager
 
   const handleGoToLast = () => {
     if (pageIndex === pageCount) {
       return
     }
 
-    setPageIndex(pageCount)
+    setPager({ pageIndex: pageCount })
   }
 
   return (

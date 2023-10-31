@@ -1,14 +1,13 @@
+import { pageSizes, rowsLabel } from '../helpers/utils'
 import { useDatatable } from '../hooks/useDatatable'
 
-const pageSizes = [5, 10, 20, 25, 50, 100]
-
 function PageSizeSelect() {
-  const { rowLabel, pageSize, setPageSize, setPageIndex } = useDatatable()
+  const { pager, setPager } = useDatatable()
+  const { pageSize } = pager
 
   const handleChange = (e) => {
     const newPageSize = Number(e.target.value) || 10
-    setPageSize(newPageSize)
-    setPageIndex(0)
+    setPager({ pageSize: newPageSize, pageIndex: 0 })
   }
 
   return (
@@ -31,7 +30,7 @@ function PageSizeSelect() {
         ))}
       </select>
 
-      <span>{rowLabel}</span>
+      <span>{rowsLabel}</span>
     </div>
   )
 }

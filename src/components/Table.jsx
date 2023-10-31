@@ -1,8 +1,9 @@
+import { rowsLabel } from '../helpers/utils'
 import { useDatatable } from '../hooks/useDatatable'
 import TableHeadCell from './TableHeadCell'
 
 function Table() {
-  const { cols, rows, rowLabel } = useDatatable()
+  const { cols, pagedRows } = useDatatable()
 
   return (
     <div className='h-full overflow-auto light-scrollbars'>
@@ -21,7 +22,7 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, index) => (
+          {pagedRows.map((row, index) => (
             <tr
               key={index}
               className='border-b hover:bg-zinc-200 dark:hover:bg-zinc-600'
@@ -38,13 +39,13 @@ function Table() {
             </tr>
           ))}
 
-          {Boolean(!rows.length) && (
+          {Boolean(!pagedRows.length) && (
             <tr className='border-b'>
               <td
                 colSpan={cols.length + 1}
                 className='text-center italic p-2'
               >
-                No {rowLabel} found
+                No {rowsLabel} found
               </td>
             </tr>
           )}

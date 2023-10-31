@@ -3,15 +3,15 @@ import clsx from 'clsx'
 import { useDatatable } from '../hooks/useDatatable'
 
 function SearchInput() {
-  const { searchText, setSearchText } = useDatatable()
+  const { searchValue, setSearchValue } = useDatatable()
 
   const handleChange = (e) => {
-    const newSearchText = e.target.value ?? ''
-    setSearchText(newSearchText)
+    const newSearchValue = e.target.value ?? ''
+    setSearchValue(newSearchValue)
   }
 
   const handleClean = () => {
-    setSearchText('')
+    setSearchValue('')
   }
 
   return (
@@ -20,14 +20,14 @@ function SearchInput() {
         placeholder='Searching ...'
         className={clsx(
           'w-full bg-transparent border-b focus:outline-none text-sm pl-2 py-1',
-          { 'pr-8': Boolean(!searchText) },
-          { 'pr-12': Boolean(searchText) }
+          { 'pr-8': Boolean(!searchValue) },
+          { 'pr-12': Boolean(searchValue) }
         )}
-        value={searchText}
+        value={searchValue}
         onChange={handleChange}
       />
 
-      {Boolean(searchText) && (
+      {Boolean(searchValue) && (
         <button
           className='absolute right-7 top-1/2 -translate-y-1/2 flex justify-center items-center'
           onClick={handleClean}

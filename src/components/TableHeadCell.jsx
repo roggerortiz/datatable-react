@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { useDatatable } from '../hooks/useDatatable'
 
 function TableHeadCell({ col }) {
-  const { sortField, sortDir, setSortField, setSortDir } = useDatatable()
+  const { pager, setPager } = useDatatable()
+  const { sortField, sortDir } = pager
 
   const handleChangeSortDir = (e) => {
     e.preventDefault()
-    setSortField(col.field)
-    setSortDir(!sortDir ? 1 : sortDir === 1 ? -1 : 0)
+
+    const newSortDir = !sortDir ? 1 : sortDir === 1 ? -1 : 0
+    setPager({ sortField: col.field, sortDir: newSortDir })
   }
 
   return (

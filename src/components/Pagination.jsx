@@ -8,7 +8,9 @@ import ButtonShowLess from './ButtonShowLess'
 import ButtonShowMore from './ButtonShowMore'
 
 function Pagination() {
-  const { pages, totalRows } = useDatatable()
+  const { pager, pagination } = useDatatable()
+  const { totalRows } = pager
+  const { pages } = pagination
 
   if (!totalRows) {
     return <></>

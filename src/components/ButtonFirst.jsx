@@ -3,14 +3,15 @@ import clsx from 'clsx'
 import { useDatatable } from '../hooks/useDatatable'
 
 function ButtonFirst() {
-  const { pageIndex, setPageIndex } = useDatatable()
+  const { pager, setPager } = useDatatable()
+  const { pageIndex } = pager
 
   const handleGoToFirst = () => {
     if (pageIndex === 1) {
       return
     }
 
-    setPageIndex(1)
+    setPager({ pageIndex: 1 })
   }
 
   return (

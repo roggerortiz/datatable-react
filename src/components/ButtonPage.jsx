@@ -3,14 +3,15 @@ import PropTypes from 'prop-types'
 import { useDatatable } from '../hooks/useDatatable'
 
 function ButtonPage({ page }) {
-  const { pageIndex, setPageIndex } = useDatatable()
+  const { pager, setPager } = useDatatable()
+  const { pageIndex } = pager
 
   const handleGoToPage = (page) => () => {
     if (pageIndex === page) {
       return
     }
 
-    setPageIndex(page)
+    setPager({ pageIndex: page })
   }
 
   return (

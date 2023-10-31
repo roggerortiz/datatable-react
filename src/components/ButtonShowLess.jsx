@@ -2,10 +2,11 @@ import { EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
 import { useDatatable } from '../hooks/useDatatable'
 
 function ButtonShowLess() {
-  const { minPageIndex, showLess, setPageIndex } = useDatatable()
+  const { pagination, setPager } = useDatatable()
+  const { minPageIndex, showLess } = pagination
 
   const handleGoToPage = () => {
-    setPageIndex(minPageIndex - 1)
+    setPager({ pageIndex: minPageIndex - 1 })
   }
 
   if (!showLess) {

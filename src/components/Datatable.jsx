@@ -10,61 +10,68 @@ import Wrapper from './Wrapper'
 
 function Datatable(props) {
   const {
-    theme,
     cols,
-    allRows,
-    filteredRows,
-    totalRows,
-    minRowIndex,
-    maxRowIndex,
-    pageIndex,
-    pageSize,
-    maxPageCount,
-    sortField,
-    sortDir,
-    searchText,
-    setTheme,
+    rows,
+    processedRows,
+    searchValue,
+    pager,
+    pagination,
     setTitle,
     setCols,
     setRows,
-    setAllRows,
-    setFilteredRows,
-    setTotalRows,
-    setMinRowIndex,
-    setMaxRowIndex,
-    setPages,
-    setPageCount,
-    setPageIndex,
-    setPageGroupIndex,
-    setMinPageIndex,
-    setMaxPageIndex,
-    setShowLess,
-    setShowMore
+    setPagedRows,
+    setProcessedRows,
+    setPager,
+    setPagination
   } = useDatatable()
 
-  const setDocumentTheme = () => {
-    if (
-      theme === 'dark' ||
-      (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark')
-      setTheme('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-      setTheme('light')
-    }
+  const setInitialData = () => {
+    setTitle(props.title)
+    setCols(props.cols)
+    setRows(props.rows)
   }
 
-  const setDataInfo = () => {
+  const processRows = () => {
+    if (!rows.length || !searchValue) {
+      setProcessedRows(rows)
+      setPager({ totalRows: rows.length, pageIndex: 1 })
+      return
+    }
+
+    const newProcessedRows = rows.filter((row) =>
+      cols.some((col) => {
+        const value = row[col.field].toString().toLowerCase()
+        return value.includes(searchValue.toLowerCase())
+      })
+    )
+
+    setProcessedRows(newProcessedRows)
+    setPager({ totalRows: newProcessedRows.length, pageIndex: 1 })
+  }
+
+  const paginateRows = () => {
+    const { sortField, sortDir } = pager
+    const { minRowIndex, maxRowIndex } = pagination
+
+    let newPagedRows = [...processedRows]
+
+    if (sortField && (sortDir === 1 || sortDir === -1)) {
+      newPagedRows = newPagedRows.sort(compareByField(sortField, sortDir))
+    }
+
+    newPagedRows = newPagedRows.slice(minRowIndex - 1, maxRowIndex)
+
+    setPagedRows(newPagedRows)
+  }
+
+  const createPagination = () => {
+    const { pageSize, pageIndex, totalRows } = pager
+    const { maxPageCount } = pagination
+
     const rowsByIndex = pageSize * pageIndex
     const minRowIndex = rowsByIndex - pageSize + 1
     const maxRowIndex = rowsByIndex > totalRows ? totalRows : rowsByIndex
 
-    setMinRowIndex(minRowIndex)
-    setMaxRowIndex(maxRowIndex)
-  }
-
-  const setPagination = () => {
     const pageCount = Math.ceil(totalRows / pageSize)
     const pageGroups = Math.ceil(pageCount / maxPageCount)
     const pageGroupIndex = Math.ceil(pageIndex / maxPageCount)
@@ -79,77 +86,45 @@ function Datatable(props) {
     const length = maxPageIndex - minPageIndex + 1
     const pages = Array.from({ length }, (_, index) => minPageIndex + index)
 
-    setPageCount(pageCount)
-    setPageGroupIndex(pageGroupIndex)
-    setMinPageIndex(minPageIndex)
-    setMaxPageIndex(maxPageIndex)
-    setShowLess(showLess)
-    setShowMore(showMore)
-    setPages(pages)
-  }
-
-  const filterRows = () => {
-    if (!allRows.length || !searchText) {
-      setFilteredRows(allRows)
-      setTotalRows(allRows.length)
-      return
-    }
-
-    const newFilteredRows = allRows.filter((row) =>
-      cols.some((col) => {
-        const value = row[col.field].toString().toLowerCase()
-        return value.includes(searchText.toLowerCase())
-      })
-    )
-
-    setFilteredRows(newFilteredRows)
-    setTotalRows(newFilteredRows.length)
-  }
-
-  const paginateRows = () => {
-    let newRows = [...filteredRows]
-
-    if (sortField && (sortDir === 1 || sortDir === -1)) {
-      newRows = newRows.sort(compareByField(sortField, sortDir))
-    }
-
-    newRows = newRows.slice(minRowIndex - 1, maxRowIndex)
-
-    setRows(newRows)
+    setPager({ pageCount })
+    setPagination({
+      pages,
+      pageGroupIndex,
+      minRowIndex,
+      maxRowIndex,
+      minPageIndex,
+      maxPageIndex,
+      showLess,
+      showMore
+    })
   }
 
   useEffect(() => {
-    setDocumentTheme()
-  }, [])
+    setInitialData()
+  }, [props])
 
   useEffect(() => {
-    setTitle(props.title)
-  }, [props.title])
+    processRows()
+  }, [rows, searchValue])
 
   useEffect(() => {
-    setCols(props.cols)
-  }, [props.cols])
-
-  useEffect(() => {
-    setAllRows(props.rows)
-  }, [props.rows])
-
-  useEffect(() => {
-    setPageIndex(1)
-  }, [pageSize])
-
-  useEffect(() => {
-    setDataInfo()
-    setPagination()
-  }, [totalRows, pageIndex])
-
-  useEffect(() => {
-    filterRows()
-  }, [allRows, searchText])
+    setPager({ pageIndex: 1 })
+  }, [pager.pageSize])
 
   useEffect(() => {
     paginateRows()
-  }, [sortField, sortDir, cols, filteredRows, minRowIndex, maxRowIndex])
+  }, [
+    cols,
+    processedRows,
+    pager.sortField,
+    pager.sortDir,
+    pagination.minRowIndex,
+    pagination.maxRowIndex
+  ])
+
+  useEffect(() => {
+    createPagination()
+  }, [pager.totalRows, pager.pageIndex])
 
   return (
     <Wrapper>
